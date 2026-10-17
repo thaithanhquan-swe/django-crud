@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}404 - Không tìm thấy trang{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="app-card p-5 shadow-sm">
+                <div class="display-1 fw-bold text-indigo mb-2">404</div>
+                <h4 class="fw-bold text-dark mb-3">Không tìm thấy trang yêu cầu</h4>
+                <p class="text-secondary mb-4">
+                    Sản phẩm hoặc đường dẫn bạn đang tìm kiếm có thể đã bị xóa, thay đổi mã hoặc không còn tồn tại trong hệ thống kho.
+                </p>
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary px-3 py-2">
+                        <i class="bi bi-house-door me-1"></i> Trang chủ
+                    </a>
+                    <a href="{% url 'product_list' %}" class="btn btn-indigo px-4 py-2">
+                        <i class="bi bi-boxes me-1"></i> Danh sách sản phẩm
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

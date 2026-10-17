@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ action_title }}{% endblock %}
+
+{% block breadcrumb_item %}
+<li class="breadcrumb-item"><a href="{% url 'product_list' %}" class="text-decoration-none text-secondary">Sản phẩm</a></li>
+<li class="breadcrumb-item active" aria-current="page">{% if is_edit %}Chỉnh sửa{% else %}Thêm mới{% endif %}</li>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <!-- Header Title -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h1 class="h3 fw-bold text-dark mb-1">{{ action_title }}</h1>
+            <p class="text-secondary mb-0 small">
+                {% if is_edit %}
+                    Cập nhật lại các thông số, mức giá hoặc trạng thái kinh doanh của sản phẩm này.
+                {% else %}
+                    Điền các thông tin chi tiết để niêm yết sản phẩm mới vào danh mục quản lý kho.
+                {% endif %}
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% if is_edit %}{% url 'product_detail' product.pk %}{% else %}{% url 'product_list' %}{% endif %}" class="btn btn-light border px-3 py-2 rounded-3">
+                <i class="bi bi-arrow-left me-1"></i> Quay lại
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Form -->
+    <form method="POST" enctype="multipart/form-data" novalidate id="productMainForm">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger shadow-sm mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-octagon-fill fs-5 me-2"></i>
+                <div class="fw-semibold">Lỗi xác thực dữ liệu:</div>
+            </div>
+            <ul class="mb-0 mt-2 ps-3 small">
+                {% for err in form.non_field_errors %}
+                    <li>{{ err }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="row g-4">
+            <!-- Left Column: Details, Price & Stock -->
+            <div class="col-12 col-lg-8">
+                <!-- Thông tin cơ bản -->
+                <div class="app-card mb-4">
+                    <div class="app-card-header">
+                        <h6 class="fw-bold text-dark mb-0">
+                            <i class="bi bi-info-circle text-primary me-2"></i>Thông tin cơ bản
+                        </h6>
+                    </div>
+                    <div class="app-card-body">
+                        <!-- Tên sản phẩm -->
+                        <div class="mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label required">
+                                Tên sản phẩm <span class="text-danger">*</span>
+                            </label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-circle me-1"></i>{{ form.name.errors|striptags }}
+                                </div>
+                            {% else %}
+                                <div class="form-text small text-muted">Tên hiển thị rõ ràng, giúp dễ tìm kiếm và nhận biết.</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Mã SKU -->
+                        <div class="mb-3">
+                            <label for="{{ form.sku.id_for_label }}" class="form-label">
+                                Mã định danh SKU <span class="text-danger">*</span>
+                            </label>
+                            {{ form.sku }}
+                            {% if form.sku.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-circle me-1"></i>{{ form.sku.errors|striptags }}
+                                </div>
+                            {% else %}
+                                <div class="form-text small text-muted">Mã duy nhất quản lý trong kho (sẽ tự động viết hoa, vd: PRD-001).</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Mô tả -->
+                        <div class="mb-0">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Mô tả sản phẩm</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-circle me-1"></i>{{ form.description.errors|striptags }}
+                                </div>
+                            {% else %}
+                                <div class="form-text small text-muted">Mô tả tính năng, công dụng, bảo hành hoặc thông số chi tiết.</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Giá & Tồn kho -->
+                <div class="app-card">
+                    <div class="app-card-header">
+                        <h6 class="fw-bold text-dark mb-0">
+                            <i class="bi bi-cash-coin text-success me-2"></i>Giá cả & Quản lý tồn kho
+                        </h6>
+                    </div>
+                    <div class="app-card-body">
+                        <div class="row g-3">
+                            <!-- Giá bán -->
+                            <div class="col-12 col-sm-6">
+                                <label for="{{ form.price.id_for_label }}" class="form-label">
+                                    Đơn giá niêm yết (VNĐ) <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    {{ form.price }}
+                                    <span class="input-group-text bg-light border text-muted">VNĐ</span>
+                                </div>
+                                {% if form.price.errors %}
+                                    <div class="text-danger small mt-1">
+                                        <i class="bi bi-exclamation-circle me-1"></i>{{ form.price.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Số lượng tồn kho -->
+                            <div class="col-12 col-sm-6">
+                                <label for="{{ form.quantity.id_for_label }}" class="form-label">
+                                    Số lượng tồn kho <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    {{ form.quantity }}
+                                    <span class="input-group-text bg-light border text-muted">Cái / Chiếc</span>
+                                </div>
+                                {% if form.quantity.errors %}
+                                    <div class="text-danger small mt-1">
+                                        <i class="bi bi-exclamation-circle me-1"></i>{{ form.quantity.errors|striptags }}
+                                    </div>
+                                {% else %}
+                                    <div class="form-text small text-muted">Hệ thống sẽ tự động cảnh báo khi tồn kho &le; 10.</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Category, Status, Media & Actions -->
+            <div class="col-12 col-lg-4">
+                <!-- Phân loại & Trạng thái -->
+                <div class="app-card mb-4">
+                    <div class="app-card-header">
+                        <h6 class="fw-bold text-dark mb-0">
+                            <i class="bi bi-tags text-indigo me-2"></i>Phân loại & Trạng thái
+                        </h6>
+                    </div>
+                    <div class="app-card-body">
+                        <!-- Danh mục -->
+                        <div class="mb-3">
+                            <label for="{{ form.category.id_for_label }}" class="form-label">
+                                Danh mục sản phẩm <span class="text-danger">*</span>
+                            </label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-circle me-1"></i>{{ form.category.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Trạng thái -->
+                        <div class="mb-0">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">
+                                Trạng thái hoạt động <span class="text-danger">*</span>
+                            </label>
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="bi bi-exclamation-circle me-1"></i>{{ form.status.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hình ảnh sản phẩm -->
+                <div class="app-card mb-4">
+                    <div class="app-card-header">
+                        <h6 class="fw-bold text-dark mb-0">
+                            <i class="bi bi-image text-warning me-2"></i>Hình ảnh sản phẩm
+                        </h6>
+                    </div>
+                    <div class="app-card-body text-center">
+                        <!-- Current image if exists -->
+                        {% if is_edit and product.image %}
+                        <div id="currentImageBox" class="mb-3">
+                            <div class="small text-muted mb-2">Ảnh hiện tại:</div>
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded border shadow-sm" style="max-height: 180px; object-fit: cover;">
+                        </div>
+                        {% endif %}
+
+                        <!-- Dynamic Live Preview Box -->
+                        <div id="imagePreviewBox" class="image-preview-box mb-3">
+                            <div class="small text-success mb-2 fw-semibold"><i class="bi bi-check-circle me-1"></i>Ảnh xem trước mới:</div>
+                            <img id="imagePreview" src="" alt="Xem trước ảnh" class="rounded border shadow-sm" style="max-height: 180px; width: auto; max-width: 100%;">
+                        </div>
+
+                        <!-- File Input -->
+                        <div class="mb-2">
+                            {{ form.image }}
+                        </div>
+                        {% if form.image.errors %}
+                            <div class="text-danger small mt-1">
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ form.image.errors|striptags }}
+                            </div>
+                        {% else %}
+                            <div class="text-muted small mt-2">
+                                Hỗ trợ: JPG, PNG, WEBP (Tối đa 5MB).
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Form Submit Card -->
+                <div class="app-card">
+                    <div class="app-card-body">
+                        <button type="submit" class="btn btn-indigo w-100 py-2 fw-semibold mb-2 shadow-sm">
+                            <i class="bi bi-floppy me-1"></i>
+                            {% if is_edit %}Lưu thay đổi{% else %}Tạo sản phẩm{% endif %}
+                        </button>
+                        <a href="{% if is_edit %}{% url 'product_detail' product.pk %}{% else %}{% url 'product_list' %}{% endif %}" class="btn btn-outline-secondary w-100 py-2">
+                            Hủy bỏ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

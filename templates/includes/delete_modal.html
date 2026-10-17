@@ -1,0 +1,28 @@
+<!-- Modal Xác Nhận Xóa Sản Phẩm -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-md);">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body text-center px-4 pt-0 pb-4">
+                <div class="d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-circle mb-3" style="width: 64px; height: 64px;">
+                    <i class="bi bi-trash3-fill fs-2"></i>
+                </div>
+                <h5 class="modal-title fw-bold text-dark mb-2" id="deleteModalLabel">Xác nhận xóa sản phẩm</h5>
+                <p class="text-secondary small mb-3">
+                    Bạn có chắc chắn muốn xóa sản phẩm <strong id="modalProductName" class="text-dark"></strong> (<span id="modalProductSku" class="font-monospace text-primary"></span>)? Hành động này không thể hoàn tác.
+                </p>
+                <div class="d-flex justify-content-center gap-2 mt-4">
+                    <button type="button" class="btn btn-light px-4 border" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <form id="deleteForm" method="POST" action="">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger px-4">
+                            <i class="bi bi-trash3 me-1"></i> Xóa vĩnh viễn
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

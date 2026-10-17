@@ -1,0 +1,28 @@
+{% if messages %}
+<div class="toast-container-fixed">
+    {% for message in messages %}
+    <div class="toast toast-custom align-items-center border-0 shadow-lg show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+        <div class="d-flex align-items-center p-3 border-start border-4 {% if message.tags == 'success' %}border-success{% elif message.tags == 'danger' or message.tags == 'error' %}border-danger{% elif message.tags == 'warning' %}border-warning{% else %}border-primary{% endif %}">
+            <div class="me-3 fs-4">
+                {% if message.tags == 'success' %}
+                    <i class="bi bi-check-circle-fill text-success"></i>
+                {% elif message.tags == 'danger' or message.tags == 'error' %}
+                    <i class="bi bi-exclamation-octagon-fill text-danger"></i>
+                {% elif message.tags == 'warning' %}
+                    <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                {% else %}
+                    <i class="bi bi-info-circle-fill text-primary"></i>
+                {% endif %}
+            </div>
+            <div class="toast-body p-0 flex-grow-1 text-dark">
+                <div class="fw-semibold small">
+                    {% if message.tags == 'success' %}Thành công{% elif message.tags == 'danger' or message.tags == 'error' %}Thông báo lỗi{% elif message.tags == 'warning' %}Cảnh báo{% else %}Thông tin{% endif %}
+                </div>
+                <div class="text-secondary small">{{ message }}</div>
+            </div>
+            <button type="button" class="btn-close ms-2" data-bs-dismiss="toast" aria-label="Đóng"></button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

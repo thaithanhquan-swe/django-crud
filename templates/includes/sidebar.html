@@ -1,0 +1,41 @@
+<aside class="sidebar">
+    <!-- Sidebar Brand -->
+    <div class="sidebar-brand">
+        <div class="brand-logo">
+            <i class="bi bi-box-seam"></i>
+        </div>
+        <div class="d-flex flex-column">
+            <span class="fw-bold fs-6 text-white tracking-wide">Quản Lý Sản Phẩm</span>
+            <span class="text-secondary small" style="font-size: 0.7rem;">Django CRUD System</span>
+        </div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar-nav">
+        <div class="sidebar-section-title">Menu chính</div>
+        <a href="{% url 'dashboard' %}" class="nav-link-custom {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <i class="bi bi-grid-1x2-fill"></i>
+            <span>Tổng quan kho (Dashboard)</span>
+        </a>
+        <a href="{% url 'product_list' %}" class="nav-link-custom {% if request.resolver_match.url_name == 'product_list' or request.resolver_match.url_name == 'product_detail' or request.resolver_match.url_name == 'product_update' %}active{% endif %}">
+            <i class="bi bi-boxes"></i>
+            <span>Danh sách sản phẩm</span>
+        </a>
+        <a href="{% url 'product_create' %}" class="nav-link-custom {% if request.resolver_match.url_name == 'product_create' %}active{% endif %}">
+            <i class="bi bi-plus-circle-fill"></i>
+            <span>Thêm sản phẩm mới</span>
+        </a>
+    </div>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+        <div class="d-flex align-items-center gap-2 p-2 rounded" style="background: rgba(255, 255, 255, 0.05);">
+            <i class="bi bi-unlock-fill text-success"></i>
+            <div class="overflow-hidden">
+                <div class="text-white small fw-semibold text-truncate">Chế độ mở (No Auth)</div>
+                <div class="text-secondary small text-truncate" style="font-size: 0.72rem;">Sử dụng ngay, không cần login</div>
+            </div>
+        </div>
+    </div>
+</aside>
+<div class="sidebar-backdrop"></div>
